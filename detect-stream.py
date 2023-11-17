@@ -11,11 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Main script to run the object detection routine."""
+
 import argparse
 import sys
 import time
-
 import cv2
 from tflite_support.task import core
 from tflite_support.task import processor
@@ -114,7 +113,7 @@ def main():
         required=False,
         default='efficientdet_lite0.tflite')
     parser.add_argument(
-        '--cameraId', help='Id of camera.', required=False, type=str, default=0)
+        '--cameraId', help='Id of camera or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
     parser.add_argument(
         '--frameWidth',
         help='Width of frame to capture from camera.',
