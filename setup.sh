@@ -10,6 +10,8 @@ fi
 python3 -m pip install pip --upgrade
 python3 -m pip install -r requirements.txt
 python3 -m pip install virtualenv
+python3 -m pip install --upgrade tflite-support==0.4.3
+python3 -m pip install --upgrade flatbuffers==2.0
 
 # Download TF Lite models
 FILE=${DATA_DIR}/efficientdet_lite0.tflite
@@ -26,5 +28,4 @@ if [ ! -f "$FILE" ]; then
     -o ${FILE}
 fi
 
-python3 -m pip install --upgrade tflite-support==0.4.3
 echo -e "Downloaded files are in ${DATA_DIR}"
