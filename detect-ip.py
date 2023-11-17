@@ -23,7 +23,7 @@ from tflite_support.task import vision
 import utils
 
 
-def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
+def run(model: str, camera_id: str, width: int, height: int, num_threads: int,
         enable_edgetpu: bool) -> None:
     """
     Args:
