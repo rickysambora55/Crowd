@@ -26,4 +26,5 @@ if [ ! -f "$FILE" ]; then
     -o ${FILE}
 fi
 
+python3 -m pip install --upgrade tflite-support==0.4.3
 echo -e "Downloaded files are in ${DATA_DIR}"
