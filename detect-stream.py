@@ -39,7 +39,7 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
     base_options = core.BaseOptions(
         file_name=model, use_coral=enable_edgetpu, num_threads=4)
     detection_options = processor.DetectionOptions(
-        max_results=3, score_threshold=0.3, category_name_allowlist="person")
+        max_results=3, score_threshold=0.3, category_name_allowlist=["person"])
     options = vision.ObjectDetectorOptions(
         base_options=base_options, detection_options=detection_options)
     detector = vision.ObjectDetector.create_from_options(options)
