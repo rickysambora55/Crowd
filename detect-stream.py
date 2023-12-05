@@ -80,7 +80,7 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
         fps_text = 'FPS = {:.1f}'.format(fps)
         count_text = 'Count = ' + str(num_detections)
         text_location = (left_margin, row_size)
-        text_location2 = (left_margin, row_size+10)
+        text_location2 = (left_margin, row_size+15)
         cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
                     font_size, text_color, font_thickness)
         cv2.putText(image, count_text, text_location2, cv2.FONT_HERSHEY_PLAIN,
