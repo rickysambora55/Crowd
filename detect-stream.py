@@ -22,8 +22,7 @@ from tflite_support.task import vision
 import utils
 
 
-def run(model: str, camera_id: str, width: int, height: int, num_threads: int,
-        enable_edgetpu: bool) -> None:
+def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
     """
     Args:
       model: Name of the TFLite object detection model.
@@ -40,8 +39,8 @@ def run(model: str, camera_id: str, width: int, height: int, num_threads: int,
 
     # Start capturing video input from the camera
     cap = cv2.VideoCapture(camera_id)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
     # Visualization parameters
     row_size = 20  # pixels
@@ -53,7 +52,7 @@ def run(model: str, camera_id: str, width: int, height: int, num_threads: int,
 
     # Initialize the object detection model
     base_options = core.BaseOptions(
-        file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
+        file_name=model, use_coral=enable_edgetpu, num_threads=4)
     detection_options = processor.DetectionOptions(
         max_results=3, score_threshold=0.3)
     options = vision.ObjectDetectorOptions(
@@ -113,35 +112,16 @@ def main():
         required=False,
         default='efficientdet_lite0.tflite')
     parser.add_argument(
-        '--cameraId', help='Id of camera or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
+        '--camera', help='Id of camera or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
     parser.add_argument(
-        '--frameWidth',
-        help='Width of frame to capture from camera.',
-        required=False,
-        type=int,
-        default=640)
-    parser.add_argument(
-        '--frameHeight',
-        help='Height of frame to capture from camera.',
-        required=False,
-        type=int,
-        default=480)
-    parser.add_argument(
-        '--numThreads',
-        help='Number of CPU threads to run the model.',
-        required=False,
-        type=int,
-        default=4)
-    parser.add_argument(
-        '--enableEdgeTPU',
+        '--tpu',
         help='Whether to run the model on EdgeTPU.',
         action='store_true',
         required=False,
         default=False)
     args = parser.parse_args()
 
-    run(args.model, args.cameraId, args.frameWidth, args.frameHeight,
-        int(args.numThreads), bool(args.enableEdgeTPU))
+    run(args.model, args.camera, bool(args.tpu))
 
 
 if __name__ == '__main__':
