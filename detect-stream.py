@@ -1,16 +1,4 @@
 # Copyright 2021 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 import argparse
 import sys
@@ -27,9 +15,6 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
     Args:
       model: Name of the TFLite object detection model.
       camera_id: The camera id to be passed to OpenCV.
-      width: The width of the frame captured from the camera.
-      height: The height of the frame captured from the camera.
-      num_threads: The number of CPU threads to run the model.
       enable_edgetpu: True/False whether the model is a EdgeTPU model.
     """
 
@@ -54,7 +39,7 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
     base_options = core.BaseOptions(
         file_name=model, use_coral=enable_edgetpu, num_threads=4)
     detection_options = processor.DetectionOptions(
-        max_results=3, score_threshold=0.3)
+        max_results=3, score_threshold=0.3, category_name_allowlist="person")
     options = vision.ObjectDetectorOptions(
         base_options=base_options, detection_options=detection_options)
     detector = vision.ObjectDetector.create_from_options(options)
@@ -64,7 +49,7 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
         success, image = cap.read()
         if not success:
             sys.exit(
-                'ERROR: Unable to read from webcam. Please verify your webcam settings.'
+                'ERROR: Unable to read from camera. Please verify your camera settings.'
             )
 
         counter += 1
@@ -115,7 +100,7 @@ def main():
         '--camera', help='Id of camera or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
     parser.add_argument(
         '--tpu',
-        help='Whether to run the model on EdgeTPU.',
+        help='Run the model on EdgeTPU (true/false).',
         action='store_true',
         required=False,
         default=False)
