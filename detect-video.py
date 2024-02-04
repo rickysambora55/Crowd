@@ -10,11 +10,11 @@ from tflite_support.task import vision
 import utils
 
 
-def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
+def run(model: str, video: str, enable_edgetpu: bool) -> None:
     """
     Args:
       model: Name of the TFLite object detection model.
-      camera_id: The camera id to be passed to OpenCV.
+      video: Video to be passed to OpenCV.
       enable_edgetpu: True/False whether the model is a EdgeTPU model.
     """
 
@@ -23,7 +23,7 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
     start_time = time.time()
 
     # Start capturing video input from the camera
-    cap = cv2.VideoCapture(camera_id)
+    cap = cv2.VideoCapture(video)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
@@ -104,7 +104,7 @@ def main():
         required=False,
         default='model/efficientdet_lite0.tflite')
     parser.add_argument(
-        '--camera', help='Id of camera or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
+        '--video', help='Video file path e.g. video/video.mp4.', required=False, type=str, default='video/footage.mp4')
     parser.add_argument(
         '--tpu',
         help='Run the model on EdgeTPU (true/false).',
@@ -113,7 +113,7 @@ def main():
         default=False)
     args = parser.parse_args()
 
-    run(args.model, args.camera, bool(args.tpu))
+    run(args.model, args.video, bool(args.tpu))
 
 
 if __name__ == '__main__':
