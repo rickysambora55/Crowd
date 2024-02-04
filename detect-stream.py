@@ -10,11 +10,11 @@ from tflite_support.task import vision
 import utils
 
 
-def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
+def run(model: str, source: str, enable_edgetpu: bool) -> None:
     """
     Args:
       model: Name of the TFLite object detection model.
-      camera_id: The camera id to be passed to OpenCV.
+      source: The source id to be passed to OpenCV.
       enable_edgetpu: True/False whether the model is a EdgeTPU model.
     """
 
@@ -22,8 +22,8 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
     counter, fps = 0, 0
     start_time = time.time()
 
-    # Start capturing video input from the camera
-    cap = cv2.VideoCapture(camera_id)
+    # Start capturing video input from the source
+    cap = cv2.VideoCapture(source)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
@@ -44,12 +44,12 @@ def run(model: str, camera_id: str, enable_edgetpu: bool) -> None:
         base_options=base_options, detection_options=detection_options)
     detector = vision.ObjectDetector.create_from_options(options)
 
-    # Continuously capture images from the camera and run inference
+    # Continuously capture images from the source and run inference
     while cap.isOpened():
         success, image = cap.read()
         if not success:
             sys.exit(
-                'ERROR: Unable to read from camera. Please verify your camera settings.'
+                'ERROR: Unable to read from source. Please verify your camera or source settings.'
             )
 
         counter += 1
@@ -104,7 +104,7 @@ def main():
         required=False,
         default='model/efficientdet_lite0.tflite')
     parser.add_argument(
-        '--camera', help='Id of camera or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
+        '--source', help='Id of camera, video path or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
     parser.add_argument(
         '--tpu',
         help='Run the model on EdgeTPU (true/false).',
@@ -113,7 +113,7 @@ def main():
         default=False)
     args = parser.parse_args()
 
-    run(args.model, args.camera, bool(args.tpu))
+    run(args.model, args.source, bool(args.tpu))
 
 
 if __name__ == '__main__':
