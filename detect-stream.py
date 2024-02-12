@@ -10,12 +10,13 @@ from tflite_support.task import vision
 import utils
 
 
-def run(model: str, source: str, enable_edgetpu: bool) -> None:
+def run(model: str, source: str, enable_edgetpu: bool, whitelist: str) -> None:
     """
     Args:
       model: Name of the TFLite object detection model.
       source: The source id to be passed to OpenCV.
       enable_edgetpu: True/False whether the model is a EdgeTPU model.
+      whitelist: Detect only specified model class.
     """
 
     # Variables to calculate FPS
@@ -39,7 +40,7 @@ def run(model: str, source: str, enable_edgetpu: bool) -> None:
     base_options = core.BaseOptions(
         file_name=model, use_coral=enable_edgetpu, num_threads=4)
     detection_options = processor.DetectionOptions(
-        max_results=3, score_threshold=0.3, category_name_allowlist=["person"])
+        max_results=3, score_threshold=0.3, category_name_allowlist=[whitelist])
     options = vision.ObjectDetectorOptions(
         base_options=base_options, detection_options=detection_options)
     detector = vision.ObjectDetector.create_from_options(options)
@@ -106,6 +107,11 @@ def main():
     parser.add_argument(
         '--source', help='Id of camera, video path or IP source e.g. http://ipaddress:port/stream/video.mjpeg.', required=False, type=str, default=0)
     parser.add_argument(
+        '--whitelist',
+        help='Detect only this class. Ex: "Person".',
+        required=False,
+        default='"person"')
+    parser.add_argument(
         '--tpu',
         help='Run the model on EdgeTPU (true/false).',
         action='store_true',
@@ -113,7 +119,7 @@ def main():
         default=False)
     args = parser.parse_args()
 
-    run(args.model, args.source, bool(args.tpu))
+    run(args.model, args.source, bool(args.tpu), args.whitelist)
 
 
 if __name__ == '__main__':
