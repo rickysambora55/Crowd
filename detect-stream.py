@@ -110,7 +110,7 @@ def main():
         '--whitelist',
         help='Detect only this class. Ex: "Person".',
         required=False,
-        default="")
+        default="person")
     parser.add_argument(
         '--tpu',
         help='Run the model on EdgeTPU (true/false).',
